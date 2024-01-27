@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import sys
-from math import isqrt
 
 def factorize(n):
 	"""
@@ -12,11 +11,19 @@ def factorize(n):
 	Return:
 	- tuple: A tuple containing two factors.
 	"""
+	factors = []
+	div = 2
 
-	for i in range(2, isqrt(n) + 1):
-		if n % i == 0:
-			return i, n // i
-	return n, 1
+	while div * div <= n:
+		if n % div == 0:
+			factors.append(div)
+			n //= div
+		else:
+			div += 1
+	if n > 1:
+		factors.append(n)
+
+	return factors
 
 def main():
 	if len(sys.argv) != 2:
@@ -27,12 +34,20 @@ def main():
 
 	try:
 		with open(input_file, 'r') as file:
-			for line in file:
-				num = int(line.strip())
-				factor1, factor2 = factorize(num)
-				print(f"{num}={factor2}*{factor1}")
+			num = file.read().splitlines()
 	except FileNotFoundError:
 		print(f"Error: File 'input_file' not found")
+		sys.exit(1)
+
+	for n in num:
+		y = int(n)
+		factorized = factorize(y)
+
+		if len(factorized) == 1:
+			print(f"{y} is prime number")
+		else:
+			p, q = y // factorized[0], factorized[0]
+			print(f"{n}={p}*{q}")
 
 if __name__ == "__main__":
 	main()
